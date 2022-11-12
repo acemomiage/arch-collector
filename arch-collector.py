@@ -17,17 +17,28 @@ def isPDF(name):
     else:
         return False
 
+def isAlreadyThumbnail(name):
+    if os.path.exists(os.path.join(root_path, str(os.path.splitext(os.path.basename(name))[0]) + '.png')):
+        return True
+    else:
+        return False
+
 def analyze_file(name):
     if isPDF(name):
-        print(name)
-        pdf2ppm[3] = name
-        cmd_ret = subprocess.run(pdf2ppm)
-        if cmd_ret != 0:
-            out_file_name = os.path.join(root_path,os.path.splitext(os.path.basename(name))[0]) + '.png'
-            convert_cmd[4] = out_file_name
-            cmd_ret = subprocess.run(convert_cmd)
-        os.remove('/tmp/arch-collector-tmp.png')
-        time.sleep(1)
+        if isAlreadyThumbnail(name):
+            print('Pass    {}'.format(name))
+            return True
+        else:
+            print('Convert {}'.format(name))
+            pdf2ppm[3] = name
+            cmd_ret = subprocess.run(pdf2ppm)
+            if cmd_ret != 0:
+                out_file_name = os.path.join(root_path,os.path.splitext(os.path.basename(name))[0]) + '.png'
+                convert_cmd[4] = out_file_name
+                cmd_ret = subprocess.run(convert_cmd)
+            os.remove('/tmp/arch-collector-tmp.png')
+            time.sleep(1)
+            return True
 
 def search_file(p):
     for l in os.listdir(p):
